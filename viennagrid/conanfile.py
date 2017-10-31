@@ -8,11 +8,6 @@ class ViennagridConan(ConanFile):
     url = "https://github.com/weatherhead99/conan-packages/tree/master/viennagrid"
     description = "ViennaGrid is a C++ library designed for the handling of structured and unstructured meshes in arbitrary spatial dimensions using different coordinate systems."
     generators = "cmake"
-    settings = "os","compiler","build_type","arch"
-    options = {"shared": [True, False]}
-    default_options = "shared=False"
-
-
     
     def source(self):
         self.run("git clone https://github.com/viennagrid/viennagrid-dev")
@@ -20,7 +15,9 @@ class ViennagridConan(ConanFile):
         self.run("git checkout release-2.1.0")
 
     def build(self):
-        cmake = CMake(self)
+        #need to specify generator otherwise conan complains about not specifying
+        #settings
+        cmake = CMake(self,generator="Unix Makefiles")
         cmake.definitions["BUILD_TESTING"] = "OFF"
         cmake.definitions["BUILD_EXAMPLES"] = "OFF"
         cmake.configure(source_dir="%s/viennagrid-dev" % self.conanfile_directory)
